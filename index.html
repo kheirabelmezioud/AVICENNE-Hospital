@@ -1541,7 +1541,8 @@
           <i class="fas fa-user-md search-icon"></i>
           <input type="text" placeholder="Search for a doctor...">
         </div>
-        <button class="search-button">Search</button>
+        <button class="search-button" onclick="redirectToSearch()">Search</button>
+
       </div>
 
       <div class="hero-buttons">
@@ -2048,5 +2049,13 @@
       });
     }
   </script>
+  <script>
+function redirectToSearch(){
+  const val1 = document.querySelector('.search-section input').value;
+  window.location.href = "search-results.html?q=" + val1;
+}
+</script>
+
 </body>
+
 </html>
