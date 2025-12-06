@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVICENNE Hospital - Medical-Surgical Center</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* System Header */
+        .system-header {
+            background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 2rem;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        .system-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .system-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Login Screen */
+        .login-section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 500px;
+            margin: 2rem auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .login-title {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #ced4da;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #0056b3;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1);
+        }
+
+        .select-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #ced4da;
+            border-radius: 10px;
+            background: #f8f9fa;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .select-control:focus {
+            outline: none;
+            border-color: #0056b3;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1);
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 86, 179, 0.4);
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: none;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border-left: 5px solid #28a745;
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border-left: 5px solid #dc3545;
+        }
+
+        /* Back Button */
+        .back-btn {
+            background: none;
+            border: none;
+            color: #0056b3;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #f8f9fa;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        /* Dashboard Styles */
+        .dashboard-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 2rem;
+            margin-top: 2rem;
+            min-height: 500px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .dashboard-title {
+            font-size: 1.8rem;
+            color: #0056b3;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+        }
+
+        /* Admin Controls */
+        .admin-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .control-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            border-left: 5px solid #0056b3;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .control-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 86, 179, 0.2);
+        }
+
+        .control-card i {
+            font-size: 3rem;
+            color: #0056b3;
+            margin-bottom: 1rem;
+        }
+
+        .control-card h3 {
+            color: #0056b3;
+            margin-bottom: 0.5rem;
+        }
+
+        .control-card p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        /* Users List */
+        .users-list {
+            margin-top: 2rem;
+        }
+
+        .user-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #0056b3;
+        }
+
+        .user-card.doctor {
+            border-left-color: #28a745;
+        }
+
+        .user-card.patient {
+            border-left-color: #17a2b8;
+        }
+
+        .user-card.admin {
+            border-left-color: #dc3545;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .login-section {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1.5rem;
+                align-items: flex-start;
+            }
+            
+            .admin-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .system-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .login-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- System Header -->
+        <div class="system-header">
+            <h1><i class="fas fa-hospital"></i> AVICENNE Hospital</h1>
+            <p>Medical-Surgical Center - Administrator Portal</p>
+        </div>
+
+        <!-- Administrator Login Page (Page 1) -->
+        <div class="login-section" id="adminLoginPage">
+            <h2 class="login-title">Administrator Login</h2>
+            <p class="text-center mb-3" style="color: #6c757d;">Please login to access administrator functions</p>
+            
+            <div class="alert" id="adminLoginAlert"></div>
+            
+            <div class="form-group">
+                <label for="adminUsername"><i class="fas fa-user-shield"></i> Username</label>
+                <input type="text" id="adminUsername" class="form-control" placeholder="Enter admin username">
+            </div>
+            
+            <div class="form-group">
+                <label for="adminPassword"><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="adminPassword" class="form-control" placeholder="Enter admin password">
+            </div>
+            
+            <button class="action-btn" onclick="loginAsAdmin()">
+                <i class="fas fa-sign-in-alt"></i> Login as Administrator
+            </button>
+            
+            <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e9ecef;">
+                <p style="color: #6c757d; font-size: 0.9rem; text-align: center;">
+                    <i class="fas fa-info-circle"></i> Default admin credentials: admin / admin123
+                </p>
+            </div>
+        </div>
+
+        <!-- Administrator Dashboard (Page 2 - Hidden initially) -->
+        <div id="adminDashboard" style="display: none;">
+            <div class="dashboard-container">
+                <div class="dashboard-header">
+                    <div>
+                        <h2 class="dashboard-title"><i class="fas fa-user-shield"></i> Administrator Dashboard</h2>
+                        <p style="color: #6c757d;">Manage user accounts and system settings</p>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar" id="adminAvatar">A</div>
+                        <div>
+                            <div class="user-name" id="adminName" style="font-weight: 600; color: #0056b3;">Administrator</div>
+                            <button class="back-btn" onclick="logoutAdmin()" style="margin: 0; padding: 0; font-size: 0.9rem;">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Creation Options -->
+                <div class="admin-controls">
+                    <div class="control-card" onclick="showCreateDoctorForm()">
+                        <i class="fas fa-user-md"></i>
+                        <h3>Create Doctor Account</h3>
+                        <p>Register a new doctor to the system with medical specialty and license details</p>
+                    </div>
+                    
+                    <div class="control-card" onclick="showCreatePatientForm()">
+                        <i class="fas fa-user-injured"></i>
+                        <h3>Create Patient Account</h3>
+                        <p>Register a new patient with personal information and medical history</p>
+                    </div>
+                    
+                    <div class="control-card" onclick="showViewUsers()">
+                        <i class="fas fa-users"></i>
+                        <h3>View All Users</h3>
+                        <p>View all registered users in the system (Doctors, Patients, Administrators)</p>
+                    </div>
+                </div>
+
+                <!-- Create Doctor Form (Hidden initially) -->
+                <div id="createDoctorForm" style="display: none;">
+                    <button class="back-btn" onclick="backToAdminDashboard()">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                    <h3 class="dashboard-title"><i class="fas fa-user-md"></i> Create Doctor Account</h3>
+                    
+                    <div class="alert" id="doctorFormAlert"></div>
+                    
+                    <div class="form-group">
+                        <label for="doctorFullName"><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" id="doctorFullName" class="form-control" placeholder="Enter doctor's full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctorUsername"><i class="fas fa-user-circle"></i> Username</label>
+                        <input type="text" id="doctorUsername" class="form-control" placeholder="Choose username for doctor">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctorEmail"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="doctorEmail" class="form-control" placeholder="Enter email address">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctorPassword"><i class="fas fa-key"></i> Password</label>
+                        <input type="password" id="doctorPassword" class="form-control" placeholder="Create password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctorSpecialty"><i class="fas fa-stethoscope"></i> Specialty</label>
+                        <select id="doctorSpecialty" class="select-control">
+                            <option value="">Select Specialty</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Surgery">Surgery</option>
+                            <option value="Neurology">Neurology</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                            <option value="Orthopedics">Orthopedics</option>
+                            <option value="Dermatology">Dermatology</option>
+                            <option value="Ophthalmology">Ophthalmology</option>
+                            <option value="Psychiatry">Psychiatry</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctorLicense"><i class="fas fa-id-card"></i> Medical License Number</label>
+                        <input type="text" id="doctorLicense" class="form-control" placeholder="Enter license number">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctorDepartment"><i class="fas fa-hospital"></i> Department</label>
+                        <input type="text" id="doctorDepartment" class="form-control" placeholder="Enter department">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctorPhone"><i class="fas fa-phone"></i> Phone Number</label>
+                        <input type="tel" id="doctorPhone" class="form-control" placeholder="Enter phone number">
+                    </div>
+                    
+                    <button class="action-btn" onclick="createDoctorAccount()">
+                        <i class="fas fa-user-plus"></i> Create Doctor Account
+                    </button>
+                </div>
+
+                <!-- Create Patient Form (Hidden initially) -->
+                <div id="createPatientForm" style="display: none;">
+                    <button class="back-btn" onclick="backToAdminDashboard()">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                    <h3 class="dashboard-title"><i class="fas fa-user-injured"></i> Create Patient Account</h3>
+                    
+                    <div class="alert" id="patientFormAlert"></div>
+                    
+                    <div class="form-group">
+                        <label for="patientFullName"><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" id="patientFullName" class="form-control" placeholder="Enter patient's full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="patientUsername"><i class="fas fa-user-circle"></i> Username</label>
+                        <input type="text" id="patientUsername" class="form-control" placeholder="Choose username for patient">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="patientEmail"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="patientEmail" class="form-control" placeholder="Enter email address">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="patientPassword"><i class="fas fa-key"></i> Password</label>
+                        <input type="password" id="patientPassword" class="form-control" placeholder="Create password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="patientDOB"><i class="fas fa-birthday-cake"></i> Date of Birth</label>
+                        <input type="date" id="patientDOB" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="patientPhone"><i class="fas fa-phone"></i> Phone Number</label>
+                        <input type="tel" id="patientPhone" class="form-control" placeholder="Enter phone number">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="patientAddress"><i class="fas fa-home"></i> Address</label>
+                        <textarea id="patientAddress" class="form-control" rows="3" placeholder="Enter full address"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="patientBloodType"><i class="fas fa-tint"></i> Blood Type</label>
+                        <select id="patientBloodType" class="select-control">
+                            <option value="">Select Blood Type</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="patientEmergencyContact"><i class="fas fa-phone-alt"></i> Emergency Contact</label>
+                        <input type="text" id="patientEmergencyContact" class="form-control" placeholder="Emergency contact name and number">
+                    </div>
+                    
+                    <button class="action-btn" onclick="createPatientAccount()">
+                        <i class="fas fa-user-plus"></i> Create Patient Account
+                    </button>
+                </div>
+
+                <!-- View Users Section (Hidden initially) -->
+                <div id="viewUsersSection" style="display: none;">
+                    <button class="back-btn" onclick="backToAdminDashboard()">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                    <h3 class="dashboard-title"><i class="fas fa-users"></i> All Registered Users</h3>
+                    
+                    <div class="users-list" id="usersList">
+                        <!-- Users will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let users = JSON.parse(localStorage.getItem('hospitalUsers')) || [];
+        let currentAdmin = JSON.parse(localStorage.getItem('currentAdmin')) || null;
+        
+        // Initialize with default admin if no users exist
+        if (users.length === 0) {
+            const defaultAdmin = {
+                id: 1,
+                name: "System Administrator",
+                username: "admin",
+                password: "admin123",
+                email: "admin@hospital.com",
+                role: "admin",
+                department: "Administration",
+                status: "active",
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(defaultAdmin);
+            localStorage.setItem('hospitalUsers', JSON.stringify(users));
+        }
+        
+        // Check if admin is already logged in
+        window.onload = function() {
+            if (currentAdmin) {
+                showAdminDashboard();
+            }
+        };
+        
+        // ========== ADMIN LOGIN FUNCTIONS ==========
+        function loginAsAdmin() {
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            
+            const alertDiv = document.getElementById('adminLoginAlert');
+            alertDiv.style.display = 'none';
+            
+            if (!username || !password) {
+                showAlert(alertDiv, 'Please enter username and password', 'error');
+                return;
+            }
+            
+            const admin = users.find(u => 
+                u.username === username && 
+                u.password === password && 
+                u.role === 'admin'
+            );
+            
+            if (admin) {
+                currentAdmin = admin;
+                localStorage.setItem('currentAdmin', JSON.stringify(admin));
+                showAdminDashboard();
+                showAlert(alertDiv, `Welcome, ${admin.name}!`, 'success');
+            } else {
+                showAlert(alertDiv, 'Invalid administrator credentials', 'error');
+            }
+        }
+        
+        function logoutAdmin() {
+            if (confirm('Are you sure you want to logout?')) {
+                currentAdmin = null;
+                localStorage.removeItem('currentAdmin');
+                document.getElementById('adminDashboard').style.display = 'none';
+                document.getElementById('adminLoginPage').style.display = 'block';
+                document.getElementById('adminUsername').value = '';
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminLoginAlert').style.display = 'none';
+            }
+        }
+        
+        // ========== DASHBOARD FUNCTIONS ==========
+        function showAdminDashboard() {
+            document.getElementById('adminLoginPage').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            
+            if (currentAdmin) {
+                document.getElementById('adminName').textContent = currentAdmin.name;
+                document.getElementById('adminAvatar').textContent = currentAdmin.name.charAt(0);
+            }
+            
+            // Show only the dashboard controls
+            document.getElementById('createDoctorForm').style.display = 'none';
+            document.getElementById('createPatientForm').style.display = 'none';
+            document.getElementById('viewUsersSection').style.display = 'none';
+            document.querySelector('.admin-controls').style.display = 'grid';
+        }
+        
+        function backToAdminDashboard() {
+            showAdminDashboard();
+        }
+        
+        function showCreateDoctorForm() {
+            document.querySelector('.admin-controls').style.display = 'none';
+            document.getElementById('createDoctorForm').style.display = 'block';
+            clearForm('doctor');
+            document.getElementById('doctorFormAlert').style.display = 'none';
+        }
+        
+        function showCreatePatientForm() {
+            document.querySelector('.admin-controls').style.display = 'none';
+            document.getElementById('createPatientForm').style.display = 'block';
+            clearForm('patient');
+            document.getElementById('patientFormAlert').style.display = 'none';
+        }
+        
+        function showViewUsers() {
+            document.querySelector('.admin-controls').style.display = 'none';
+            document.getElementById('viewUsersSection').style.display = 'block';
+            loadUsersList();
+        }
+        
+        // ========== CREATE DOCTOR ACCOUNT ==========
+        function createDoctorAccount() {
+            const name = document.getElementById('doctorFullName').value.trim();
+            const username = document.getElementById('doctorUsername').value.trim();
+            const email = document.getElementById('doctorEmail').value.trim();
+            const password = document.getElementById('doctorPassword').value;
+            const specialty = document.getElementById('doctorSpecialty').value;
+            const license = document.getElementById('doctorLicense').value.trim();
+            const department = document.getElementById('doctorDepartment').value.trim();
+            const phone = document.getElementById('doctorPhone').value.trim();
+            
+            const alertDiv = document.getElementById('doctorFormAlert');
+            alertDiv.style.display = 'none';
+            
+            // Validation
+            if (!name || !username || !email || !password || !specialty || !license) {
+                showAlert(alertDiv, 'Please fill in all required fields', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showAlert(alertDiv, 'Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+            if (users.find(u => u.username === username)) {
+                showAlert(alertDiv, 'Username already exists', 'error');
+                return;
+            }
+            
+            if (users.find(u => u.email === email)) {
+                showAlert(alertDiv, 'Email already registered', 'error');
+                return;
+            }
+            
+            // Create doctor object
+            const doctor = {
+                id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1,
+                name: name,
+                username: username,
+                password: password,
+                email: email,
+                role: 'doctor',
+                specialty: specialty,
+                license: license,
+                department: department || 'General Medicine',
+                phone: phone,
+                status: 'active',
+                createdAt: new Date().toISOString(),
+                createdBy: currentAdmin.id,
+                createdByName: currentAdmin.name,
+                doctorId: 'D-' + String(users.length + 1).padStart(5, '0')
+            };
+            
+            users.push(doctor);
+            localStorage.setItem('hospitalUsers', JSON.stringify(users));
+            
+            showAlert(alertDiv, `Doctor account created successfully! Doctor ID: ${doctor.doctorId}`, 'success');
+            
+            // Clear form after 2 seconds
+            setTimeout(() => {
+                clearForm('doctor');
+            }, 2000);
+        }
+        
+        // ========== CREATE PATIENT ACCOUNT ==========
+        function createPatientAccount() {
+            const name = document.getElementById('patientFullName').value.trim();
+            const username = document.getElementById('patientUsername').value.trim();
+            const email = document.getElementById('patientEmail').value.trim();
+            const password = document.getElementById('patientPassword').value;
+            const dob = document.getElementById('patientDOB').value;
+            const phone = document.getElementById('patientPhone').value.trim();
+            const address = document.getElementById('patientAddress').value.trim();
+            const bloodType = document.getElementById('patientBloodType').value;
+            const emergencyContact = document.getElementById('patientEmergencyContact').value.trim();
+            
+            const alertDiv = document.getElementById('patientFormAlert');
+            alertDiv.style.display = 'none';
+            
+            // Validation
+            if (!name || !username || !email || !password || !dob) {
+                showAlert(alertDiv, 'Please fill in all required fields', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showAlert(alertDiv, 'Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+            if (users.find(u => u.username === username)) {
+                showAlert(alertDiv, 'Username already exists', 'error');
+                return;
+            }
+            
+            if (users.find(u => u.email === email)) {
+                showAlert(alertDiv, 'Email already registered', 'error');
+                return;
+            }
+            
+            // Calculate age from DOB
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            // Create patient object
+            const patient = {
+                id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1,
+                name: name,
+                username: username,
+                password: password,
+                email: email,
+                role: 'patient',
+                dob: dob,
+                age: age,
+                phone: phone,
+                address: address,
+                bloodType: bloodType,
+                emergencyContact: emergencyContact,
+                patientId: 'P-' + String(users.length + 1).padStart(5, '0'),
+                status: 'active',
+                createdAt: new Date().toISOString(),
+                createdBy: currentAdmin.id,
+                createdByName: currentAdmin.name
+            };
+            
+            users.push(patient);
+            localStorage.setItem('hospitalUsers', JSON.stringify(users));
+            
+            showAlert(alertDiv, `Patient account created successfully! Patient ID: ${patient.patientId}`, 'success');
+            
+            // Clear form after 2 seconds
+            setTimeout(() => {
+                clearForm('patient');
+            }, 2000);
+        }
+        
+        // ========== VIEW USERS ==========
+        function loadUsersList() {
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = '';
+            
+            if (users.length === 0) {
+                usersList.innerHTML = '<p>No users found.</p>';
+                return;
+            }
+            
+            // Sort users by role and name
+            const sortedUsers = [...users].sort((a, b) => {
+                if (a.role === b.role) {
+                    return a.name.localeCompare(b.name);
+                }
+                return a.role.localeCompare(b.role);
+            });
+            
+            sortedUsers.forEach(user => {
+                let roleIcon = '👤';
+                let roleClass = '';
+                let roleColor = '#6c757d';
+                
+                if (user.role === 'admin') {
+                    roleIcon = '🛡️';
+                    roleClass = 'admin';
+                    roleColor = '#dc3545';
+                } else if (user.role === 'doctor') {
+                    roleIcon = '👨‍⚕️';
+                    roleClass = 'doctor';
+                    roleColor = '#28a745';
+                } else if (user.role === 'patient') {
+                    roleIcon = '👤';
+                    roleClass = 'patient';
+                    roleColor = '#17a2b8';
+                }
+                
+                const userCard = document.createElement('div');
+                userCard.className = `user-card ${roleClass}`;
+                userCard.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <span style="font-size: 1.2rem;">${roleIcon}</span>
+                                <h4 style="margin: 0; color: ${roleColor};">${user.name}</h4>
+                            </div>
+                            <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">
+                                <strong>Username:</strong> ${user.username} | 
+                                <strong>Role:</strong> ${user.role}
+                            </p>
+                            ${user.role === 'doctor' ? `<p style="margin: 0.5rem 0; color: #6c757d; font-size: 0.9rem;"><strong>Specialty:</strong> ${user.specialty}</p>` : ''}
+                            ${user.role === 'patient' ? `<p style="margin: 0.5rem 0; color: #6c757d; font-size: 0.9rem;"><strong>Patient ID:</strong> ${user.patientId}</p>` : ''}
+                            <p style="margin: 0; color: #6c757d; font-size: 0.8rem;">
+                                Created: ${new Date(user.createdAt).toLocaleDateString()}
+                            </p>
+                        </div>
+                        <div>
+                            ${user.role === 'doctor' ? `<span style="background: #28a745; color: white; padding: 0.25rem 0.5rem; border-radius: 5px; font-size: 0.8rem;">Doctor</span>` : ''}
+                            ${user.role === 'patient' ? `<span style="background: #17a2b8; color: white; padding: 0.25rem 0.5rem; border-radius: 5px; font-size: 0.8rem;">Patient</span>` : ''}
+                            ${user.role === 'admin' ? `<span style="background: #dc3545; color: white; padding: 0.25rem 0.5rem; border-radius: 5px; font-size: 0.8rem;">Admin</span>` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                usersList.appendChild(userCard);
+            });
+        }
+        
+        // ========== HELPER FUNCTIONS ==========
+        function clearForm(formType) {
+            if (formType === 'doctor') {
+                document.getElementById('doctorFullName').value = '';
+                document.getElementById('doctorUsername').value = '';
+                document.getElementById('doctorEmail').value = '';
+                document.getElementById('doctorPassword').value = '';
+                document.getElementById('doctorSpecialty').value = '';
+                document.getElementById('doctorLicense').value = '';
+                document.getElementById('doctorDepartment').value = '';
+                document.getElementById('doctorPhone').value = '';
+            } else if (formType === 'patient') {
+                document.getElementById('patientFullName').value = '';
+                document.getElementById('patientUsername').value = '';
+                document.getElementById('patientEmail').value = '';
+                document.getElementById('patientPassword').value = '';
+                document.getElementById('patientDOB').value = '';
+                document.getElementById('patientPhone').value = '';
+                document.getElementById('patientAddress').value = '';
+                document.getElementById('patientBloodType').value = '';
+                document.getElementById('patientEmergencyContact').value = '';
+            }
+        }
+        
+        function showAlert(alertDiv, message, type) {
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'flex';
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'}"></i>
+                <div>${message}</div>
+            `;
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    alertDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>
