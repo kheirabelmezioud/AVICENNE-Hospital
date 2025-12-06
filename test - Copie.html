@@ -1,0 +1,2323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+    <!-- We are using Font Awesome for icons, loaded from a CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ========================================== -->
+    <!--              ALL CSS STYLES               -->
+    <!-- ========================================== -->
+    <style>
+        /* General Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: #f9fafb;
+            color: #1f2937;
+            transition: font-size 0.3s ease;
+        }
+
+        /* MODIFIÉ: Nouvelle couleur principale */
+        :root {
+            --primary-color: #003d82;
+            --primary-color-light: #e6f0ff;
+            --primary-color-hover: #002d61;
+            --secondary-color: #10b981;
+            --secondary-color-light: #d1fae5;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            animation: slideDown 0.5s ease-out;
+        }
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .doctor-info h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin: 0;
+            animation: fadeIn 1s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .doctor-info p {
+            margin: 0.25rem 0 0;
+            color: #e9ecef;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .notification-button {
+            background-color: white;
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .notification-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .doctor-avatar {
+            width: 3rem;
+            height: 3rem;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.125rem;
+            transition: transform 0.3s ease;
+        }
+        .doctor-avatar:hover {
+            transform: scale(1.1);
+        }
+
+        /* Navigation */
+        .main-nav {
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1.5rem 0;
+            animation: slideUp 0.6s ease-out;
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .main-nav .header-content {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+        }
+        .nav-button {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: none;
+            border: none;
+            color: #6b7280;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .nav-button i {
+            font-size: 1.5rem;
+        }
+        .nav-button.active {
+            color: var(--primary-color);
+            position: relative;
+        }
+        .nav-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1.5rem;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--primary-color);
+            animation: expandWidth 0.3s ease-out;
+        }
+        @keyframes expandWidth {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        .nav-button:hover {
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1280px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+        }
+        .content-area {
+            flex: 1;
+        }
+        .sidebar {
+            width: 320px;
+        }
+
+        /* Security Notice */
+        .security-notice {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .security-notice i {
+            color: var(--secondary-color);
+            margin-top: 0.125rem;
+        }
+        .security-notice h3 {
+            font-weight: 600;
+            color: #14532d;
+            margin: 0 0 0.25rem;
+        }
+        .security-notice p {
+            color: #166534;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            animation: fadeInContent 0.5s ease-out;
+        }
+        @keyframes fadeInContent {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-content h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Calendar & Appointments */
+        .appointment-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .appointment-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--primary-color);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+        .appointment-card:hover::before {
+            transform: scaleY(1);
+        }
+        .appointment-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: scale(1.03);
+            background-color: var(--primary-color-light);
+        }
+        .appointment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .appointment-time {
+            background-color: var(--primary-color-light);
+            color: var(--primary-color);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+        }
+        .appointment-details h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+        .appointment-details p {
+            margin: 0;
+            font-size: 0.875rem;
+            color: #4b5563;
+        }
+        .appointment-actions {
+            opacity: 0;
+            transition: opacity 0.2s;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .appointment-card:hover .appointment-actions {
+            opacity: 1;
+        }
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .action-btn.view { background-color: var(--secondary-color); color: white; }
+        .action-btn.cancel { background-color: #ef4444; color: white; }
+
+        .upcoming-appointments {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .upcoming-appointments h3 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 0.5rem;
+        }
+        .upcoming-appointment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f9fafb;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s;
+        }
+        .upcoming-appointment-item:hover {
+            background-color: var(--primary-color-light);
+            transform: translateX(5px);
+        }
+        .upcoming-appointment-item span {
+            font-size: 0.875rem;
+        }
+        .status-badge {
+            font-size: 0.75rem;
+            background-color: #fef3c7;
+            color: #92400e;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+
+        /* Patients */
+        .patients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .patient-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            transform: scale(1);
+            position: relative;
+            overflow: hidden;
+        }
+        .patient-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--secondary-color-light) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .patient-card:hover::after {
+            opacity: 0.2;
+        }
+        .patient-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: scale(1.05);
+            background-color: var(--primary-color-light);
+        }
+        .patient-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .patient-avatar {
+            width: 3rem;
+            height: 3rem;
+            background-color: var(--primary-color-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+        .patient-card:hover .patient-avatar {
+            transform: rotate(10deg);
+        }
+        .patient-name {
+            font-weight: 600;
+            margin: 0;
+        }
+        .patient-last-visit {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin: 0;
+        }
+        .view-dossier-btn {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        .view-dossier-btn:hover {
+            background-color: var(--primary-color-hover);
+            transform: translateY(-2px);
+        }
+
+        /* NOUVEAU: Barre de recherche pour les patients */
+        .patient-search-bar {
+            display: flex;
+            align-items: center;
+            background-color: #f0fdf4;
+            border: 2px solid var(--secondary-color);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .patient-search-bar:focus-within {
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+        .patient-search-bar i {
+            color: var(--secondary-color);
+            margin-right: 0.75rem;
+        }
+        .patient-search-bar input {
+            border: none;
+            background: none;
+            outline: none;
+            width: 100%;
+            font-size: 1rem;
+            color: #1f2937;
+        }
+        .patient-search-bar input::placeholder {
+            color: #6b7280;
+        }
+
+        /* Messages */
+        .message-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .message-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--secondary-color);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+        .message-card:hover::before {
+            transform: scaleY(1);
+        }
+        .message-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transform: translateX(5px);
+        }
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .message-sender {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .message-sender-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            background-color: var(--secondary-color-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #065f46;
+            transition: transform 0.3s ease;
+        }
+        .message-card:hover .message-sender-avatar {
+            transform: rotate(10deg);
+        }
+        .message-sender-info h4 {
+            margin: 0;
+            font-weight: 600;
+        }
+        .message-sender-info p {
+            margin: 0;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        .unread-badge {
+            background-color: #ef4444;
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            animation: pulse 2s infinite;
+        }
+        .message-text {
+            margin: 0 0 1rem;
+            color: #374151;
+        }
+        .message-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .reply-btn, .view-file-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .reply-btn:hover, .view-file-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .reply-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .view-file-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        /* Reports */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .report-card {
+            border: 2px dashed #93c5fd;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            background-color: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .report-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--primary-color-light) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .report-card:hover::after {
+            opacity: 0.2;
+        }
+        .report-card:hover {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color-light);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 61, 130, 0.2);
+        }
+        .report-card i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        .report-card:hover i {
+            transform: scale(1.2);
+        }
+        .report-card h3 {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 0.5rem 0;
+        }
+        .report-card p {
+            font-size: 0.875rem;
+            color: #4b5563;
+            margin: 0;
+        }
+
+        /* Sidebar */
+        .sidebar-content {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            position: sticky;
+            top: 1.5rem;
+            animation: slideRight 0.8s ease-out;
+        }
+        @keyframes slideRight {
+            from {
+                transform: translateX(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .sidebar-content h3 {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .sidebar-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-content li {
+            font-size: 0.875rem;
+            color: #374151;
+            margin-bottom: 0.75rem;
+            display: flex;
+            gap: 0.5rem;
+            transition: transform 0.2s;
+        }
+        .sidebar-content li:hover {
+            transform: translateX(5px);
+        }
+        .bullet {
+            color: var(--secondary-color);
+        }
+
+        /* MODIFIÉ: Patient File Panel - Side Panel */
+        .patient-file-panel {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 40%;
+            height: 100vh;
+            background: linear-gradient(to right, #f0f9ff, #e6f0ff);
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+            transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 40;
+            padding: 2rem;
+            overflow-y: auto;
+            border-right: 4px solid var(--primary-color);
+        }
+        .patient-file-panel.open {
+            left: 0;
+        }
+        .file-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .file-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            animation: expandWidth 1s ease-out;
+        }
+        .file-header h2 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+        .close-file-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .close-file-btn:hover {
+            background-color: var(--primary-color-hover);
+            transform: rotate(90deg);
+        }
+        .file-section {
+            margin-bottom: 1.5rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .file-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .file-section h3 {
+            font-size: 1.125rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .file-section h3 i {
+            color: var(--secondary-color);
+        }
+        .file-section p, .file-section li {
+            color: #6b7280;
+        }
+        .file-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .file-section li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f3f4f6;
+            transition: background-color 0.2s;
+        }
+        .file-section li:hover {
+            background-color: #f9fafb;
+            padding-left: 0.5rem;
+        }
+        .file-section li:last-child {
+            border-bottom: none;
+        }
+        
+        /* FAB Message Button */
+        .fab-message {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 3.5rem;
+            height: 3.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: background-color 0.2s, transform 0.2s;
+            z-index: 45;
+        }
+        .fab-message:hover {
+            background-color: var(--primary-color-hover);
+            transform: scale(1.1);
+        }
+
+        /* NOUVEAU: Zoom Button */
+        .zoom-controls {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 45;
+        }
+        .zoom-btn {
+            width: 3rem;
+            height: 3rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .zoom-btn:hover {
+            background-color: var(--primary-color-hover);
+            transform: scale(1.1);
+        }
+        .zoom-level {
+            background-color: white;
+            color: var(--primary-color);
+            border-radius: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Chat Panel */
+        .chat-panel {
+            position: fixed;
+            right: -100%;
+            top: 0;
+            height: 100vh;
+            width: 24rem;
+            background-color: white;
+            box-shadow: -4px 0 6px -1px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease-in-out;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-panel.open {
+            right: 0;
+        }
+        .chat-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-header h3 {
+            margin: 0;
+            font-weight: 700;
+        }
+        #chat-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+        .chat-tabs {
+            display: flex;
+            background-color: #f3f4f6;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .chat-tab {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .chat-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        .chat-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: none;
+        }
+        .chat-content.active {
+            display: block;
+        }
+        .doctor-list, .patient-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+        .doctor-item, .patient-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .doctor-item:hover, .patient-item:hover {
+            background-color: #f9fafb;
+            transform: translateX(5px);
+        }
+        .doctor-item-avatar, .patient-item-avatar {
+            position: relative;
+            width: 2.5rem;
+            height: 2.5rem;
+            background-color: var(--primary-color-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+        .doctor-item:hover .doctor-item-avatar, 
+        .patient-item:hover .patient-item-avatar {
+            transform: rotate(10deg);
+        }
+        .online-indicator {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0.75rem;
+            height: 0.75rem;
+            background-color: var(--secondary-color);
+            border: 2px solid white;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        .doctor-item-info h4, .patient-item-info h4 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        .doctor-item-info p, .patient-item-info p {
+            margin: 0;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        /* MODIFIÉ: Panneau pour le formulaire de rapport - Même design que la lettre de référence */
+        .report-form-panel {
+            position: fixed;
+            right: -100%;
+            top: 0;
+            height: 100vh;
+            width: 30rem;
+            background-color: white;
+            box-shadow: -4px 0 6px -1px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease-in-out;
+            z-index: 60;
+            display: flex;
+            flex-direction: column;
+        }
+        .report-form-panel.open {
+            right: 0;
+        }
+        .report-form-header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .report-form-header h3 {
+            margin: 0;
+            font-weight: 700;
+        }
+        .close-report-form-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+        .report-form-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            color: #1f2937;
+            background-color: #f9fafb;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: white;
+        }
+        .send-report-btn {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        .send-report-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* NOUVEAU: Panneau pour la lettre de référence */
+        .reference-letter-panel {
+            position: fixed;
+            right: -100%;
+            top: 0;
+            height: 100vh;
+            width: 30rem;
+            background-color: white;
+            box-shadow: -4px 0 6px -1px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease-in-out;
+            z-index: 60;
+            display: flex;
+            flex-direction: column;
+        }
+        .reference-letter-panel.open {
+            right: 0;
+        }
+        .reference-letter-header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .reference-letter-header h3 {
+            margin: 0;
+            font-weight: 700;
+        }
+        .close-reference-letter-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+        .reference-letter-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .file-upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .file-upload-area:hover {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color-light);
+        }
+        .file-upload-area i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .file-upload-area p {
+            margin: 0.5rem 0;
+            color: #6b7280;
+        }
+        .selected-file {
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .selected-file i {
+            color: var(--secondary-color);
+        }
+        .remove-file {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+        }
+        .send-reference-btn {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        .send-reference-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* MODIFIÉ: Login Page Styles - Resemble to the provided image */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .login-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .login-header h1 {
+            margin: 0;
+            font-size: 1.875rem;
+            font-weight: 700;
+        }
+        .login-content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        .form-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .login-header i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .login-header p {
+            color: #6b7280;
+            margin: 0;
+        }
+        .error-message {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            color: #1f2937;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 61, 130, 0.1);
+        }
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .remember-me input[type="checkbox"] {
+            width: 1rem;
+            height: 1rem;
+        }
+        .forgot-password {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-color-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .login-divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: #6b7280;
+        }
+        .login-divider::before,
+        .login-divider::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background-color: #e5e7eb;
+        }
+        .login-divider span {
+            padding: 0 1rem;
+        }
+        .register-info {
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+        }
+        .register-info h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        .register-steps {
+            padding-left: 1.5rem;
+            margin: 1rem 0;
+        }
+        .register-steps li {
+            margin-bottom: 0.5rem;
+        }
+        .dashboard-container {
+            display: none;
+        }
+        
+        /* MODIFIÉ: Style pour la section Secure & Confidential */
+        .secure-notice {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .secure-notice i {
+            color: var(--secondary-color);
+            margin-top: 0.125rem;
+        }
+        .secure-notice h3 {
+            font-weight: 600;
+            color: #14532d;
+            margin: 0 0 0.25rem;
+        }
+        .secure-notice p {
+            color: #166534;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="login-page">
+        <div class="login-header">
+            <h1>Doctor Portal</h1>
+            <p>Medical Management System</p>
+        </div>
+        
+        <div class="login-content">
+            <div class="form-container">
+                <div class="login-form">
+                    <div class="secure-notice">
+                        <i class="fa-solid fa-lock"></i>
+                        <div>
+                            <h3>Secure & Confidential</h3>
+                            <p>Your information is protected with bank-level encryption</p>
+                        </div>
+                    </div>
+                    
+                    <div class="login-header">
+                        <i class="fa-solid fa-user-circle"></i>
+                        <h2 class="section-title">Doctor Login</h2>
+                        <p>Sign in to access your medical dashboard</p>
+                    </div>
+                    
+                    <div class="error-message" id="login-error">
+                        Invalid credentials. Please check your information and try again.
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctor-fullname">Full Name</label>
+                        <input type="text" id="doctor-fullname" class="form-control" placeholder="Enter your full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctor-specialty">Specialty</label>
+                        <select id="doctor-specialty" class="form-control">
+                            <option value="" disabled selected>Select your specialty</option>
+                            <option value="general-practitioner">General Practitioner</option>
+                            <option value="cardiology">Cardiology</option>
+                            <option value="dermatology">Dermatology</option>
+                            <option value="endocrinology">Endocrinology</option>
+                            <option value="gastroenterology">Gastroenterology</option>
+                            <option value="neurology">Neurology</option>
+                            <option value="oncology">Oncology</option>
+                            <option value="orthopedics">Orthopedics</option>
+                            <option value="pediatrics">Pediatrics</option>
+                            <option value="psychiatry">Psychiatry</option>
+                            <option value="radiology">Radiology</option>
+                            <option value="urology">Urology</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctor-phone">Phone Number</label>
+                        <input type="tel" id="doctor-phone" class="form-control" placeholder="Enter your phone number">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctor-password">Password</label>
+                        <input type="password" id="doctor-password" class="form-control" placeholder="Enter your password">
+                    </div>
+                    
+                    <div class="login-options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember-me">
+                            <label for="remember-me">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="login-btn" style="width: 100%;">Sign In</button>
+                    
+                    <div class="login-divider">
+                        <span>New to our hospital?</span>
+                    </div>
+                    
+                    <div class="register-info">
+                        <h3>How to Get an Account</h3>
+                        <p>If you're a new doctor, you'll need to register with our hospital first to access our online services.</p>
+                        
+                        <ol class="register-steps">
+                            <li>Visit our hospital administration office with valid credentials</li>
+                            <li>Complete the registration form with your professional details</li>
+                            <li>Our staff will verify your information and create your account</li>
+                            <li>You'll receive your account details via email or SMS</li>
+                        </ol>
+                        
+                        <p>For assistance with registration, please call our admin services at <strong>01 40 94 85 85</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container" id="dashboard-page">
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <div class="doctor-info">
+                    <h1 id="doctor-name">Dr. William Dupont</h1>
+                    <p id="doctor-specialty-display">General Practitioner</p>
+                </div>
+                <div class="header-actions">
+                    <div class="notification-button">
+                        <i class="fa-solid fa-bell"></i>
+                        Messages (<span id="unread-count">3</span>)
+                    </div>
+                    <div class="doctor-avatar" id="doctor-avatar">WD</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="header-content">
+                <button class="nav-button active" data-tab="calendar">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Agenda</span>
+                </button>
+                <button class="nav-button" data-tab="patients">
+                    <i class="fa-solid fa-user-group"></i>
+                    <span>Patients</span>
+                </button>
+                <button class="nav-button" data-tab="messages">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>Messages</span>
+                </button>
+                <button class="nav-button" data-tab="reports">
+                    <i class="fa-solid fa-file-medical"></i>
+                    <span>Reports</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="content-area">
+                <!-- Security Notice -->
+                <div class="security-notice">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <div>
+                        <h3>Secure & Confidential</h3>
+                        <p>Your information is protected with bank-level encryption</p>
+                    </div>
+                </div>
+
+                <!-- Tab Contents -->
+                <!-- Calendar View -->
+                <div id="calendar" class="tab-content active">
+                    <h2><i class="fa-solid fa-calendar-check"></i> Today's Appointments</h2>
+                    <div id="today-appointments-list">
+                        <!-- Appointments will be injected here by JavaScript -->
+                    </div>
+                    <div class="upcoming-appointments">
+                        <h3>Upcoming Appointments</h3>
+                        <div id="upcoming-appointments-list">
+                             <!-- Upcoming appointments will be injected here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patients View -->
+                <div id="patients" class="tab-content">
+                    <h2><i class="fa-solid fa-user-group"></i> My Patients</h2>
+                    
+                    <!-- NOUVEAU: Barre de recherche -->
+                    <div class="patient-search-bar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="patient-search-input" placeholder="Search for a patient...">
+                    </div>
+
+                    <div id="patients-list" class="patients-grid">
+                        <!-- Patients will be injected here by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Messages View -->
+                <div id="messages" class="tab-content">
+                    <h2><i class="fa-solid fa-envelope"></i> Patient Messages</h2>
+                    <div id="messages-list">
+                        <!-- Messages will be injected here by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Reports View -->
+                <div id="reports" class="tab-content">
+                    <h2><i class="fa-solid fa-file-medical"></i> Reports</h2>
+                    
+                    <div class="reports-grid">
+                        <button id="request-report-btn" class="report-card">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <h3>Request a Report</h3>
+                            <p>Medical exams and tests</p>
+                        </button>
+                        <button id="reference-letter-btn" class="report-card">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <h3>Reference Letter</h3>
+                            <p>Send to a specialist</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-content">
+                    <h3><i class="fa-solid fa-circle-info"></i> Important Reminders</h3>
+                    <ul>
+                        <li><span class="bullet">•</span> Check medical history before consultation</li>
+                        <li><span class="bullet">•</span> Prescribe only after complete examination</li>
+                        <li><span class="bullet">•</span> Document all consultations</li>
+                        <li><span class="bullet">•</span> Respond to messages within 24 hours</li>
+                    </ul>
+                </div>
+            </aside>
+        </main>
+
+        <!-- FAB Message Button -->
+        <button id="fab-message" class="fab-message">
+            <i class="fa-solid fa-message"></i>
+        </button>
+
+        <!-- NOUVEAU: Zoom Controls -->
+        <div class="zoom-controls">
+            <div class="zoom-level" id="zoom-level">100%</div>
+            <button id="zoom-in-btn" class="zoom-btn">
+                <i class="fa-solid fa-search-plus"></i>
+            </button>
+            <button id="zoom-out-btn" class="zoom-btn">
+                <i class="fa-solid fa-search-minus"></i>
+            </button>
+        </div>
+
+        <!-- Chat Panel -->
+        <div id="chat-panel" class="chat-panel">
+            <div class="chat-header">
+                <h3>Chat</h3>
+                <button id="chat-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="chat-tabs">
+                <div class="chat-tab active" data-chat="doctors">Doctors</div>
+                <div class="chat-tab" data-chat="patients">Patients</div>
+            </div>
+            <div class="chat-content active" id="doctors-chat">
+                <div class="doctor-list" id="doctor-list">
+                    <!-- Doctors will be injected here by JavaScript -->
+                </div>
+            </div>
+            <div class="chat-content" id="patients-chat">
+                <div class="patient-list" id="patient-list">
+                    <!-- Patients will be injected here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- MODIFIÉ: Patient File Panel - Side Panel -->
+        <div id="patient-file-panel" class="patient-file-panel">
+            <div class="file-header">
+                <h2 id="file-patient-name">Patient File</h2>
+                <button id="close-file-btn" class="close-file-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="file-content">
+                <!-- Patient file content will be injected here -->
+            </div>
+        </div>
+
+        <!-- MODIFIÉ: Panneau pour le formulaire de rapport - Même design que la lettre de référence -->
+        <div id="report-form-panel" class="report-form-panel">
+            <div class="report-form-header">
+                <h3>Request a Report</h3>
+                <button id="close-report-form-btn" class="close-report-form-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="report-request-form" class="report-form-body">
+                <div class="form-group">
+                    <label for="recipient-doctor">Recipient Doctor Name</label>
+                    <input type="text" id="recipient-doctor" name="recipient-doctor" required>
+                </div>
+                <div class="form-group">
+                    <label for="specialty">Specialty</label>
+                    <input type="text" id="specialty" name="specialty" required>
+                </div>
+                <div class="form-group">
+                    <label for="patient-select">Patient Name</label>
+                    <select id="patient-select" name="patient-select" required>
+                        <option value="" disabled selected>Select a patient...</option>
+                        <!-- Patient options will be injected here by JavaScript -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="report-details">Report Details</label>
+                    <textarea id="report-details" name="report-details" rows="5" placeholder="Ex: Complete blood count, Chest X-ray, Prescription for..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Attach File or Photo</label>
+                    <div class="file-upload-area" id="report-file-upload-area">
+                        <i class="fa-solid fa-cloud-upload-alt"></i>
+                        <p>Click to browse or drag and drop</p>
+                        <p>Supported formats: JPG, PNG, PDF (Max 5MB)</p>
+                        <input type="file" id="report-file-input" style="display: none;" accept=".jpg,.jpeg,.png,.pdf">
+                    </div>
+                    <div id="report-selected-file-container"></div>
+                </div>
+                <button type="submit" class="send-report-btn">Send Request</button>
+            </form>
+        </div>
+
+        <!-- NOUVEAU: Panneau pour la lettre de référence -->
+        <div id="reference-letter-panel" class="reference-letter-panel">
+            <div class="reference-letter-header">
+                <h3>Reference Letter</h3>
+                <button id="close-reference-letter-btn" class="close-reference-letter-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="reference-letter-form" class="reference-letter-body">
+                <div class="form-group">
+                    <label for="ref-doctor-name">Doctor Name</label>
+                    <input type="text" id="ref-doctor-name" name="ref-doctor-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="ref-specialty">Specialty</label>
+                    <select id="ref-specialty" name="ref-specialty" required>
+                        <option value="" disabled selected>Select a specialty...</option>
+                        <option value="cardiology">Cardiology</option>
+                        <option value="dermatology">Dermatology</option>
+                        <option value="endocrinology">Endocrinology</option>
+                        <option value="gastroenterology">Gastroenterology</option>
+                        <option value="neurology">Neurology</option>
+                        <option value="oncology">Oncology</option>
+                        <option value="orthopedics">Orthopedics</option>
+                        <option value="pediatrics">Pediatrics</option>
+                        <option value="psychiatry">Psychiatry</option>
+                        <option value="radiology">Radiology</option>
+                        <option value="urology">Urology</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ref-patient-name">Patient Name</label>
+                    <select id="ref-patient-name" name="ref-patient-name" required>
+                        <option value="" disabled selected>Select a patient...</option>
+                        <!-- Patient options will be injected here by JavaScript -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ref-reason">Reason for Referral</label>
+                    <textarea id="ref-reason" name="ref-reason" rows="4" placeholder="Please describe the reason for referral..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Attach File or Photo</label>
+                    <div class="file-upload-area" id="file-upload-area">
+                        <i class="fa-solid fa-cloud-upload-alt"></i>
+                        <p>Click to browse or drag and drop</p>
+                        <p>Supported formats: JPG, PNG, PDF (Max 5MB)</p>
+                        <input type="file" id="ref-file-input" style="display: none;" accept=".jpg,.jpeg,.png,.pdf">
+                    </div>
+                    <div id="selected-file-container"></div>
+                </div>
+                <button type="submit" class="send-reference-btn">Send Reference Letter</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!--              JAVASCRIPT CODE              -->
+    <!-- ========================================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DATA ---
+            const appointments = [
+                { id: 1, date: '2024-11-20', time: '09:00', patient: 'Sara Martin', type: 'Consultation', status: 'confirmed' },
+                { id: 2, date: '2024-11-20', time: '10:30', patient: 'Jean Dubois', type: 'Follow-up', status: 'confirmed' },
+                { id: 3, date: '2024-11-20', time: '14:00', patient: 'Marc Lopez', type: 'Consultation', status: 'confirmed' },
+                { id: 4, date: '2024-11-21', time: '09:30', patient: 'Marie Durand', type: 'Examination', status: 'pending' },
+            ];
+
+            const patients = [
+                { id: 1, name: 'Sara Martin', lastVisit: '2024-11-15', status: 'Active' },
+                { id: 2, name: 'Jean Dubois', lastVisit: '2024-11-10', status: 'Active' },
+                { id: 3, name: 'Marc Lopez', lastVisit: '2024-11-08', status: 'Active' },
+                { id: 4, name: 'Marie Durand', lastVisit: '2024-10-25', status: 'Active' },
+            ];
+
+            const patientFiles = {
+                'Sara Martin': {
+                    consultations: [
+                        { date: '20/11/2024', type: 'Consultation', result: 'The patient presents flu symptoms. Prescribed antipyretics and rest.', prescription: 'Paracetamol 500mg, 1 tablet in case of pain/fever (max 4/day).' },
+                        { date: '15/10/2024', type: 'Visit to another doctor', result: 'Dermatologist - Diagnosis of eczema. Topical cream prescribed.' }
+                    ]
+                },
+                'Jean Dubois': {
+                    consultations: [
+                        { date: '10/11/2024', type: 'Follow-up', result: 'Blood pressure improved with medication. Continue current treatment.', prescription: 'Continue with current medication.' }
+                    ]
+                },
+                'Marc Lopez': {
+                    consultations: [
+                        { date: '08/11/2024', type: 'Consultation', result: 'Patient reports chronic back pain. Recommended physical therapy.', prescription: 'Physical therapy referral.' }
+                    ]
+                },
+                'Marie Durand': {
+                    consultations: [
+                        { date: '25/10/2024', type: 'Examination', result: 'Routine checkup. Patient in good health.', prescription: 'No medication required.' }
+                    ]
+                }
+            };
+
+            const messages = [
+                { id: 1, patient: 'Sara Martin', message: 'Hello doctor, I still have pain...', time: '10:30', unread: true },
+                { id: 2, patient: 'Jean Dubois', message: 'Thank you for yesterday\'s consultation', time: '09:15', unread: true },
+                { id: 3, patient: 'Marc Lopez', message: 'Can I have a prescription for...', time: 'Yesterday', unread: true },
+            ];
+
+            const doctors = [
+                { id: 1, name: 'Dr. Ahmed Benali', specialty: 'Cardiologist', online: true },
+                { id: 2, name: 'Dr. Sophie Laurent', specialty: 'Pediatrician', online: false },
+                { id: 3, name: 'Dr. Mohamed Tahri', specialty: 'Dermatologist', online: true },
+            ];
+            
+            const chatPatients = [
+                { id: 1, name: 'Sara Martin', lastMessage: 'Thanks for the consultation', time: '10:30', unread: true },
+                { id: 2, name: 'Jean Dubois', lastMessage: 'When is my next visit?', time: 'Yesterday', unread: false },
+                { id: 3, name: 'Marc Lopez', lastMessage: 'I took my medication', time: '2 days', unread: false },
+            ];
+
+            // --- LOGIN PAGE FUNCTIONALITY ---
+            const loginPage = document.getElementById('login-page');
+            const dashboardPage = document.getElementById('dashboard-page');
+            const loginBtn = document.getElementById('login-btn');
+            const loginError = document.getElementById('login-error');
+
+            // Store doctor information
+            let doctorInfo = {
+                name: '',
+                specialty: '',
+                phone: ''
+            };
+
+            // Login functionality
+            loginBtn.addEventListener('click', () => {
+                const fullname = document.getElementById('doctor-fullname').value;
+                const specialty = document.getElementById('doctor-specialty').value;
+                const phone = document.getElementById('doctor-phone').value;
+                const password = document.getElementById('doctor-password').value;
+                
+                // Reset error message
+                loginError.style.display = 'none';
+                
+                if (!fullname || !specialty || !phone || !password) {
+                    loginError.style.display = 'block';
+                    return;
+                }
+                
+                // Store doctor information
+                doctorInfo = {
+                    name: fullname,
+                    specialty: specialty,
+                    phone: phone
+                };
+                
+                // Show dashboard after a short delay
+                setTimeout(() => {
+                    showDashboard();
+                }, 500);
+            });
+
+            // Show dashboard function
+            function showDashboard() {
+                loginPage.style.display = 'none';
+                dashboardPage.style.display = 'block';
+                
+                // Update doctor information in the dashboard
+                document.getElementById('doctor-name').textContent = `Dr. ${doctorInfo.name}`;
+                document.getElementById('doctor-specialty-display').textContent = formatSpecialty(doctorInfo.specialty);
+                
+                // Update avatar initials
+                const initials = doctorInfo.name.split(' ').map(n => n[0]).join('');
+                document.getElementById('doctor-avatar').textContent = initials;
+                
+                initializeDashboard();
+            }
+            
+            // Format specialty for display
+            function formatSpecialty(specialty) {
+                return specialty.split('-').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
+            }
+
+            // Initialize dashboard functions
+            function initializeDashboard() {
+                // --- DOM ELEMENTS ---
+                const navButtons = document.querySelectorAll('.nav-button');
+                const tabContents = document.querySelectorAll('.tab-content');
+                const unreadCountSpan = document.getElementById('unread-count');
+                
+                const patientFilePanel = document.getElementById('patient-file-panel');
+                const closeFileBtn = document.getElementById('close-file-btn');
+                const filePatientName = document.getElementById('file-patient-name');
+                const fileContent = document.getElementById('file-content');
+                
+                const chatPanel = document.getElementById('chat-panel');
+                const fabMessage = document.getElementById('fab-message');
+                const chatClose = document.getElementById('chat-close');
+                const chatTabs = document.querySelectorAll('.chat-tab');
+                const chatContents = document.querySelectorAll('.chat-content');
+
+                // NOUVEAU: Éléments pour la recherche et le formulaire de rapport
+                const patientSearchInput = document.getElementById('patient-search-input');
+                const patientsList = document.getElementById('patients-list');
+                const requestReportBtn = document.getElementById('request-report-btn');
+                const reportFormPanel = document.getElementById('report-form-panel');
+                const closeReportFormBtn = document.getElementById('close-report-form-btn');
+                const reportRequestForm = document.getElementById('report-request-form');
+                const patientSelect = document.getElementById('patient-select');
+
+                // NOUVEAU: Éléments pour la lettre de référence
+                const referenceLetterBtn = document.getElementById('reference-letter-btn');
+                const referenceLetterPanel = document.getElementById('reference-letter-panel');
+                const closeReferenceLetterBtn = document.getElementById('close-reference-letter-btn');
+                const referenceLetterForm = document.getElementById('reference-letter-form');
+                const refPatientSelect = document.getElementById('ref-patient-name');
+                const fileUploadArea = document.getElementById('file-upload-area');
+                const refFileInput = document.getElementById('ref-file-input');
+                const selectedFileContainer = document.getElementById('selected-file-container');
+
+                // NOUVEAU: Éléments pour les contrôles de zoom
+                const zoomInBtn = document.getElementById('zoom-in-btn');
+                const zoomOutBtn = document.getElementById('zoom-out-btn');
+                const zoomLevel = document.getElementById('zoom-level');
+                let currentZoom = 100;
+
+                // --- FUNCTIONS ---
+
+                // Tab Switching
+                function showTab(tabId) {
+                    navButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        if (btn.dataset.tab === tabId) {
+                            btn.classList.add('active');
+                        }
+                    });
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === tabId) {
+                            content.classList.add('active');
+                        }
+                    });
+                }
+
+                // Render Appointments
+                function renderAppointments() {
+                    const todayList = document.getElementById('today-appointments-list');
+                    const upcomingList = document.getElementById('upcoming-appointments-list');
+                    const today = '2024-11-20';
+                    todayList.innerHTML = '';
+                    upcomingList.innerHTML = '';
+
+                    appointments.forEach(apt => {
+                        const card = document.createElement('div');
+                        card.className = 'appointment-card';
+                        card.innerHTML = `
+                            <div class="appointment-header">
+                                <div class="appointment-details">
+                                    <span class="appointment-time">${apt.time}</span>
+                                    <h3>${apt.patient}</h3>
+                                    <p>${apt.type}</p>
+                                </div>
+                                <div class="appointment-actions">
+                                    <button class="action-btn view" data-patient="${apt.patient}">View File</button>
+                                    <button class="action-btn cancel">Cancel</button>
+                                </div>
+                            </div>
+                        `;
+                        if (apt.date === today) {
+                            todayList.appendChild(card);
+                        } else {
+                            const item = document.createElement('div');
+                            item.className = 'upcoming-appointment-item';
+                            item.innerHTML = `
+                                <span>${apt.date} - ${apt.time} | ${apt.patient}</span>
+                                <span class="status-badge">Pending</span>
+                            `;
+                            upcomingList.appendChild(item);
+                        }
+                    });
+                    
+                    // Add event listeners to all view file buttons in appointments
+                    document.querySelectorAll('.appointment-card .action-btn.view').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const patientName = btn.getAttribute('data-patient');
+                            showPatientFile(patientName);
+                        });
+                    });
+                }
+
+                // Render Patients
+                function renderPatients(patientsToRender = patients) {
+                    patientsList.innerHTML = '';
+                    patientsToRender.forEach(patient => {
+                        const card = document.createElement('div');
+                        card.className = 'patient-card';
+                        card.innerHTML = `
+                            <div class="patient-card-header">
+                                <div class="patient-avatar">${patient.name.split(' ').map(n => n[0]).join('')}</div>
+                                <div>
+                                    <h4 class="patient-name">${patient.name}</h4>
+                                    <p class="patient-last-visit">Last visit: ${patient.lastVisit}</p>
+                                </div>
+                            </div>
+                            <button class="view-dossier-btn" data-patient="${patient.name}">View File</button>
+                        `;
+                        patientsList.appendChild(card);
+                    });
+                    
+                    // MODIFIÉ: Ajout d'un écouteur d'événements pour chaque bouton "View File"
+                    document.querySelectorAll('.view-dossier-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const patientName = btn.getAttribute('data-patient');
+                            showPatientFile(patientName);
+                        });
+                    });
+                }
+                
+                // NOUVEAU: Fonction pour afficher le dossier d'un patient
+                function showPatientFile(patientName) {
+                    const file = patientFiles[patientName];
+                    if (!file) {
+                        fileContent.innerHTML = `<p>No file available for ${patientName}.</p>`;
+                    } else {
+                        let consultationsHtml = '';
+                        file.consultations.forEach(consult => {
+                            consultationsHtml += `
+                                <li>
+                                    <strong>${consult.date} - ${consult.type}</strong>
+                                    <p>${consult.result}</p>
+                                    ${consult.prescription ? `<p><strong>Prescription:</strong> ${consult.prescription}</p>` : ''}
+                                </li>
+                            `;
+                        });
+                        fileContent.innerHTML = `
+                            <div class="file-section">
+                                <h3><i class="fa-solid fa-history"></i> Consultation History</h3>
+                                <ul>${consultationsHtml}</ul>
+                            </div>
+                        `;
+                    }
+                    filePatientName.textContent = `File of ${patientName}`;
+                    patientFilePanel.classList.add('open');
+                }
+
+                // Render Messages
+                function renderMessages() {
+                    const messagesList = document.getElementById('messages-list');
+                    messagesList.innerHTML = '';
+                    
+                    messages.forEach(msg => {
+                        const card = document.createElement('div');
+                        card.className = 'message-card';
+                        card.innerHTML = `
+                            <div class="message-header">
+                                <div class="message-sender">
+                                    <div class="message-sender-avatar">${msg.patient.split(' ').map(n => n[0]).join('')}</div>
+                                    <div class="message-sender-info">
+                                        <h4>${msg.patient}</h4>
+                                        <p>${msg.time}</p>
+                                    </div>
+                                </div>
+                                ${msg.unread ? '<span class="unread-badge">New</span>' : ''}
+                            </div>
+                            <p class="message-text">${msg.message}</p>
+                            <div class="message-actions">
+                                <button class="reply-btn" data-patient="${msg.patient}"><i class="fa-solid fa-paper-plane"></i> Reply</button>
+                                <button class="view-file-btn" data-patient="${msg.patient}"><i class="fa-solid fa-folder-open"></i> View File</button>
+                            </div>
+                        `;
+                        messagesList.appendChild(card);
+                    });
+                    
+                    document.querySelectorAll('.reply-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            openChatForPatient(btn.getAttribute('data-patient'));
+                        });
+                    });
+
+                    // NOUVEAU: Écouteur pour le bouton "View File" dans les messages
+                    document.querySelectorAll('.view-file-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const patientName = btn.getAttribute('data-patient');
+                            showPatientFile(patientName);
+                        });
+                    });
+                }
+                
+                function openChatForPatient(patientName) {
+                    chatPanel.classList.add('open');
+                    chatTabs.forEach(tab => tab.classList.remove('active'));
+                    document.querySelector('[data-chat="patients"]').classList.add('active');
+                    chatContents.forEach(content => content.classList.remove('active'));
+                    document.getElementById('patients-chat').classList.add('active');
+                    console.log(`Chat opened to reply to ${patientName}`);
+                }
+
+                // Render Doctors for Chat
+                function renderDoctors() {
+                    const doctorList = document.getElementById('doctor-list');
+                    doctorList.innerHTML = '';
+                    doctors.forEach(doc => {
+                        const item = document.createElement('div');
+                        item.className = 'doctor-item';
+                        item.innerHTML = `
+                            <div class="doctor-item-avatar">
+                                ${doc.name.split(' ')[1][0]}
+                                ${doc.online ? '<div class="online-indicator"></div>' : ''}
+                            </div>
+                            <div class="doctor-item-info">
+                                <h4>${doc.name}</h4>
+                                <p>${doc.specialty}</p>
+                            </div>
+                        `;
+                        doctorList.appendChild(item);
+                    });
+                }
+                
+                function renderChatPatients() {
+                    const patientList = document.getElementById('patient-list');
+                    patientList.innerHTML = '';
+                    chatPatients.forEach(patient => {
+                        const item = document.createElement('div');
+                        item.className = 'patient-item';
+                        item.innerHTML = `
+                            <div class="patient-item-avatar">
+                                ${patient.name.split(' ')[0][0]}
+                                ${patient.unread ? '<div class="online-indicator"></div>' : ''}
+                            </div>
+                            <div class="patient-item-info">
+                                <h4>${patient.name}</h4>
+                                <p>${patient.lastMessage}</p>
+                            </div>
+                        `;
+                        patientList.appendChild(item);
+                    });
+                }
+
+                // NOUVEAU: Fonction pour remplir la liste déroulante des patients
+                function populatePatientSelect() {
+                    patientSelect.innerHTML = '<option value="" disabled selected>Select a patient...</option>';
+                    refPatientSelect.innerHTML = '<option value="" disabled selected>Select a patient...</option>';
+                    patients.forEach(patient => {
+                        const option = document.createElement('option');
+                        option.value = patient.name;
+                        option.textContent = patient.name;
+                        patientSelect.appendChild(option);
+                        
+                        const option2 = document.createElement('option');
+                        option2.value = patient.name;
+                        option2.textContent = patient.name;
+                        refPatientSelect.appendChild(option2);
+                    });
+                }
+
+                // NOUVEAU: Fonction pour gérer le zoom
+                function updateZoom(delta) {
+                    currentZoom += delta;
+                    if (currentZoom < 80) currentZoom = 80;
+                    if (currentZoom > 120) currentZoom = 120;
+                    
+                    document.body.style.fontSize = `${currentZoom}%`;
+                    zoomLevel.textContent = `${currentZoom}%`;
+                }
+
+                // --- EVENT LISTENERS ---
+                navButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        showTab(button.dataset.tab);
+                    });
+                });
+                
+                closeFileBtn.addEventListener('click', () => {
+                    patientFilePanel.classList.remove('open');
+                });
+                
+                fabMessage.addEventListener('click', () => {
+                    chatPanel.classList.toggle('open');
+                });
+
+                chatClose.addEventListener('click', () => {
+                    chatPanel.classList.remove('open');
+                });
+                
+                chatTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const chatType = tab.dataset.chat;
+                        chatTabs.forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        chatContents.forEach(c => c.classList.remove('active'));
+                        document.getElementById(`${chatType}-chat`).classList.add('active');
+                    });
+                });
+
+                // NOUVEAU: Écouteur pour la recherche de patients
+                patientSearchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const filteredPatients = patients.filter(patient =>
+                        patient.name.toLowerCase().includes(searchTerm)
+                    );
+                    renderPatients(filteredPatients);
+                });
+
+                // NOUVEAU: Écouteurs pour le formulaire de rapport
+                requestReportBtn.addEventListener('click', () => {
+                    reportFormPanel.classList.add('open');
+                    populatePatientSelect(); // Populate the dropdown when the form opens
+                });
+
+                closeReportFormBtn.addEventListener('click', () => {
+                    reportFormPanel.classList.remove('open');
+                });
+
+                reportRequestForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(reportRequestForm);
+                    const data = {
+                        recipient: formData.get('recipient-doctor'),
+                        specialty: formData.get('specialty'),
+                        patient: formData.get('patient-select'),
+                        details: formData.get('report-details')
+                    };
+                    console.log('Report request sent:', data);
+                    alert('Report request sent successfully!');
+                    reportFormPanel.classList.remove('open');
+                    reportRequestForm.reset();
+                    document.getElementById('report-selected-file-container').innerHTML = '';
+                });
+
+                // NOUVEAU: Écouteurs pour la lettre de référence
+                referenceLetterBtn.addEventListener('click', () => {
+                    referenceLetterPanel.classList.add('open');
+                    populatePatientSelect(); // Populate the dropdown when the form opens
+                });
+
+                closeReferenceLetterBtn.addEventListener('click', () => {
+                    referenceLetterPanel.classList.remove('open');
+                });
+
+                referenceLetterForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(referenceLetterForm);
+                    const data = {
+                        doctorName: formData.get('ref-doctor-name'),
+                        specialty: formData.get('ref-specialty'),
+                        patientName: formData.get('ref-patient-name'),
+                        reason: formData.get('ref-reason')
+                    };
+                    console.log('Reference letter sent:', data);
+                    alert('Reference letter sent successfully!');
+                    referenceLetterPanel.classList.remove('open');
+                    referenceLetterForm.reset();
+                    selectedFileContainer.innerHTML = '';
+                });
+
+                // NOUVEAU: Gestion du téléchargement de fichiers pour la lettre de référence
+                fileUploadArea.addEventListener('click', () => {
+                    refFileInput.click();
+                });
+
+                refFileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        selectedFileContainer.innerHTML = `
+                            <div class="selected-file">
+                                <i class="fa-solid fa-file"></i>
+                                <span>${file.name}</span>
+                                <button type="button" class="remove-file" id="remove-file">
+                                    <i class="fa-solid fa-times"></i>
+                                </button>
+                            </div>
+                        `;
+                        
+                        document.getElementById('remove-file').addEventListener('click', () => {
+                            refFileInput.value = '';
+                            selectedFileContainer.innerHTML = '';
+                        });
+                    }
+                });
+
+                // NOUVEAU: Gestion du téléchargement de fichiers pour le formulaire de rapport
+                document.getElementById('report-file-upload-area').addEventListener('click', () => {
+                    document.getElementById('report-file-input').click();
+                });
+
+                document.getElementById('report-file-input').addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        document.getElementById('report-selected-file-container').innerHTML = `
+                            <div class="selected-file">
+                                <i class="fa-solid fa-file"></i>
+                                <span>${file.name}</span>
+                                <button type="button" class="remove-file" id="remove-report-file">
+                                    <i class="fa-solid fa-times"></i>
+                                </button>
+                            </div>
+                        `;
+                        
+                        document.getElementById('remove-report-file').addEventListener('click', () => {
+                            document.getElementById('report-file-input').value = '';
+                            document.getElementById('report-selected-file-container').innerHTML = '';
+                        });
+                    }
+                });
+
+                // NOUVEAU: Écouteurs pour les contrôles de zoom
+                zoomInBtn.addEventListener('click', () => {
+                    updateZoom(10);
+                });
+
+                zoomOutBtn.addEventListener('click', () => {
+                    updateZoom(-10);
+                });
+
+                // --- INITIALIZATION ---
+                showTab('calendar');
+                renderAppointments();
+                renderPatients();
+                renderMessages();
+                renderDoctors();
+                renderChatPatients();
+                updateUnreadCount();
+            }
+
+            function updateUnreadCount() {
+                const count = messages.filter(m => m.unread).length;
+                document.getElementById('unread-count').textContent = count;
+            }
+
+            // Login test function
+            function testLogin() {
+                console.log('Testing login functionality...');
+                
+                // Fill in the login form with test credentials
+                document.getElementById('doctor-fullname').value = 'Ahmed Ali';
+                document.getElementById('doctor-specialty').value = 'general-practitioner';
+                document.getElementById('doctor-phone').value = '1234567890';
+                document.getElementById('doctor-password').value = 'password123';
+                
+                // Click the login button
+                loginBtn.click();
+                
+                console.log('Login test completed. Dashboard should be visible now.');
+            }
+            
+            // Add test button to the page for debugging
+            const testButton = document.createElement('button');
+            testButton.textContent = 'Test Login';
+            testButton.style.position = 'fixed';
+            testButton.style.bottom = '20px';
+            testButton.style.right = '20px';
+            testButton.style.zIndex = '1000';
+            testButton.style.backgroundColor = '#28a745';
+            testButton.style.color = 'white';
+            testButton.style.border = 'none';
+            testButton.style.padding = '10px 15px';
+            testButton.style.borderRadius = '5px';
+            testButton.style.cursor = 'pointer';
+            testButton.addEventListener('click', testLogin);
+            document.body.appendChild(testButton);
+        });
+    </script>
+</body>
+</html>
