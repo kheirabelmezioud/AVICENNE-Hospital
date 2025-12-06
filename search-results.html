@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results - Doctors</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: #f8f9fa;
+      color: #333;
+    }
+
+    /* Header same style */
+    .header {
+      background: #0056b3;
+      padding: 1rem 2rem;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    /* Page title */
+    .page-title {
+      text-align: center;
+      margin: 30px 0 10px;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #0056b3;
+    }
+
+    .subtitle {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #666;
+      font-size: 1rem;
+    }
+
+    /* Search bar */
+    .search-box {
+      max-width: 700px;
+      background: white;
+      margin: 0 auto 40px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 50px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      flex: 1;
+      font-size: 16px;
+    }
+
+    .search-button {
+      background: #0056b3;
+      padding: 10px 20px;
+      color: white;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* Grid */
+    .grid {
+      display: grid;
+      max-width: 1200px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Doctor card */
+    .doctor-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      transition: 0.3s ease;
+    }
+    .doctor-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .doctor-img {
+      width: 100%;
+      height: 180px;
+      background: #bdd8ff;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #003d82;
+      font-weight: 700;
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    .doctor-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #0056b3;
+    }
+
+    .doctor-specialty {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .choose-btn {
+      margin-top: 12px;
+      width: 100%;
+      padding: 10px;
+      background: #0056b3;
+      color: white;
+      border: none;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .back-home {
+      display: block;
+      text-align: center;
+      margin: 30px auto;
+      background: #7beeb9;
+      color: #003d82;
+      padding: 12px 25px;
+      width: 200px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-title">VICENNE Hospital - Medical-Surgical Center</div>
+    <a href="index.html" style="color:white; text-decoration:none; font-weight:600;">Home</a>
+  </div>
+
+  <h1 class="page-title">Search Results</h1>
+  <p class="subtitle">Doctors matching your search</p>
+
+  <!-- Search Bar -->
+  <div class="search-box">
+    <i class="fas fa-search"></i>
+    <input id="searchInput" type="text" placeholder="Search again...">
+    <button class="search-button" onclick="runSearch()">Search</button>
+  </div>
+
+  <!-- Result Grid -->
+  <div class="grid" id="doctorsGrid"></div>
+
+  <a href="index.html" class="back-home">← Back to Home</a>
+
+  <script>
+    // Sample doctors
+    const DOCTORS = [
+      {name:"Dr. Amine Benali", specialty:"Cardiology", initials:"AB"},
+      {name:"Dr. Laila Messaoud", specialty:"Dermatology", initials:"LM"},
+      {name:"Dr. Samir Oukaci", specialty:"General Surgery", initials:"SO"},
+      {name:"Dr. Nora Belkacem", specialty:"Orthopedics", initials:"NB"},
+      {name:"Dr. Farah Kacem", specialty:"Pediatrics", initials:"FK"},
+      {name:"Dr. Yacine Haddad", specialty:"Cardiology", initials:"YH"}
+    ];
+
+    function displayDoctors(list){
+      const grid = document.getElementById("doctorsGrid");
+      grid.innerHTML = "";
+      list.forEach(doc=>{
+        grid.innerHTML += `
+          <div class="doctor-card">
+            <div class="doctor-img">${doc.initials}</div>
+            <div class="doctor-name">${doc.name}</div>
+            <div class="doctor-specialty">${doc.specialty}</div>
+            <button class="choose-btn">Select</button>
+          </div>
+        `;
+      });
+    }
+
+    // Read search term from URL
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q")?.toLowerCase() || "";
+
+    const filtered = DOCTORS.filter(
+      d => d.name.toLowerCase().includes(q) || d.specialty.toLowerCase().includes(q)
+    );
+
+    displayDoctors(filtered);
+
+    function runSearch(){
+      const value = document.getElementById("searchInput").value;
+      window.location.href = `search-results.html?q=${value}`;
+    }
+  </script>
+
+</body>
+</html>
+
